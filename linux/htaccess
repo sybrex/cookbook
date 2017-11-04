@@ -1,0 +1,68 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+RewriteRule ^.*$ index.php [NC,L]
+</IfModule>
+
+php_value upload_max_filesize 20M
+php_value post_max_size 20M
+php_value memory_limit 256M
+
+<IfModule !mod_rewrite.c>
+ErrorDocument 404 /index.php
+</IfModule>
+
+AddDefaultCharset UTF-8
+Header unset Pragma
+FileETag None
+Header unset ETag
+
+# 1 YEAR
+<filesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|swf|mp3|mp4)$">
+Header set Cache-Control "public"
+Header set Expires "Thu, 29 Jun 2013 22:00:00 GMT"
+Header set Last-Modified "Thu, 25 Jun 2013 22:00:00 GMT"
+</filesMatch>
+
+# 2 HOURS
+<filesMatch "\.(html|htm|xml|txt|xsl)$">
+Header set Cache-Control "max-age=7200, must-revalidate"
+</filesMatch>
+
+# CACHED FOREVER
+# MOD_REWRITE TO RENAME EVERY CHANGE
+<filesMatch "\.(js|css)$">
+Header set Cache-Control "public"
+Header set Expires "Thu, 15 Apr 2013 20:00:00 GMT"
+Header unset Last-Modified
+</filesMatch>
+<IfModule mod_headers.c>
+<FilesMatch "\.(js|css|xml|gz)$">
+Header append Vary: Accept-Encoding
+</FilesMatch>
+</IfModule>
+
+<ifModule mod_gzip.c>
+mod_gzip_on Yes
+mod_gzip_dechunk Yes
+mod_gzip_item_include file \.(html?|txt|css|js|php|pl)$
+mod_gzip_item_include handler ^cgi-script$
+mod_gzip_item_include mime ^text/.*
+mod_gzip_item_include mime ^application/x-javascript.*
+mod_gzip_item_exclude mime ^image/.*
+mod_gzip_item_exclude rspheader ^Content-E ncoding:.*gzip.*
+</ifModule>
+
+# MAINTENANCE-PAGE REDIRECT
+<IfModule mod_rewrite.c>
+ RewriteEngine on
+ RewriteCond %{REMOTE_ADDR} !^123\.456\.789\.000 
+ RewriteCond %{REMOTE_ADDR} !^123\.456\.789\.000
+ RewriteCond %{REMOTE_ADDR} !^123\.456\.789\.000
+ RewriteCond %{REQUEST_URI} !/maintenance.html$ [NC]
+ RewriteCond %{REQUEST_URI} !\.(jpe?g?|png|gif) [NC]
+ RewriteRule .* /maintenance.html [R=302,L]
+</IfModule>
