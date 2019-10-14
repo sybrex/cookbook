@@ -16,3 +16,6 @@
 - Coroutine
 - Sockets
 - Async/Await
+- Cooperative multitasking
+- Threading
+- [Argparse](argparse.md)
